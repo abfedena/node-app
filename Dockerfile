@@ -1,22 +1,19 @@
-FROM ubuntu:14.04
-RUN apt-get update && apt-get -y upgrade
+FROM node:8
 
-RUN apt-get -y install software-properties-common
-RUN add-apt-repository ppa:webupd8team/java
-RUN apt-get -y update
+# Create app directory
+WORKDIR /usr/src/app
 
-# Accept the license
-RUN echo "oracle-java7-installer shared/accepted-oracle-license-v1-1 boolean true" | debconf-set-selections
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
 
-RUN apt-get -y install oracle-java7-installer
+RUN npm install
+# If you are building your code for production
+# RUN npm install --only=production
 
-# Here comes the tomcat installation
-RUN apt-get -y install tomcat7
-RUN echo "JAVA_HOME=/usr/lib/jvm/java-7-oracle" >> /etc/default/tomcat7
+# Bundle app source
+COPY . .
 
-# Expose the default tomcat port
 EXPOSE 8080
-
-# Start the tomcat (and leave it hanging)
-CMD service tomcat7 start && tail -f /var/lib/tomcat7/logs/catalina.out
-
+CMD [ "npm", "start" ]
