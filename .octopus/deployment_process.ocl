@@ -1,0 +1,25 @@
+step "AWS - Launch EC2 Instance" {
+    condition = "Always"
+
+    action {
+        environments = ["dev"]
+        properties = {
+            Octopus.Action.RunOnServer = "true"
+            Octopus.Action.Template.Id = "ActionTemplates-2"
+            Octopus.Action.Template.Version = "1"
+            odAccessKey = "AKIAVKVB4FMD3T45OSUM"
+            odImageId = "ami-006d3995d3a6b963b"
+            odInstanceType = "t2.micro"
+            odKeyName = "new-instances"
+            odRegion = "ap-south-1"
+            odSecretKey = "BZO4QYULf755km6PpaP1Y/AWCFUp4qwKdtN08iQ7"
+            odSecurityGroupId = "sg-03a3993c1ef2a7419"
+            odSubnetId = "subnet-0b4c703650896bf77"
+            odTags = <<-EOT
+                Name=#{Octopus.Project.Name}
+                Environment=#{Octopus.Environment.Name}
+            EOT
+            odUserData = "<powershell>tzutil.exe /s 'AUS Eastern Standard Time'</powershell>"
+        }
+    }
+}
